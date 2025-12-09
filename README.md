@@ -1,8 +1,8 @@
 # CompGraphicsFinalExamFolder
 
-Due to an previosuly acknowledged issue regarding the changing of required tags and identifiers
-in URP the shaders and textures do not come across properly in the build
-version of the project.
+Due to an previosuly acknowledged issue regarding the changing of required 
+tags and identifiers in URP the shaders and textures do not come across
+properly in the build version of the project.
 
 A Shader for the water was created that used a combination of the wave
 effect, as well as scrollling texture effect, in order to create a more
@@ -19,4 +19,5 @@ the enemy from view when the stencil is in front of them as opposed to
 making them visible when the Stencil is in front of them as usual. I
 was unable to thik of any particluar reason to add the stencil shader to
 this game so I simply implemented it in a way that showed fairly simple 
-functionality. 
+functionality.  
+
