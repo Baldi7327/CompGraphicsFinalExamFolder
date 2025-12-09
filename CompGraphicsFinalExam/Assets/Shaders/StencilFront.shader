@@ -1,4 +1,4 @@
-Shader "Unlit/StencilShader"
+Shader "Unlit/StencilFront"
 {
     Properties
     {
@@ -9,14 +9,18 @@ Shader "Unlit/StencilShader"
     {
         Tags { "RenderPipeline" = "UniversalRenderPipeline" "Queue" = "Geometry" }
 
+        // Disable color output (so the object doesn't appear visually)
+        ColorMask 0
+        ZWrite Off
+
         // Stencil operations
         Stencil
         {
-            Ref 1  // Reference value to check against
-            Comp NotEqual  // Only render where the stencil buffer is NOT equal to the reference
+            Ref 1  // Set stencil reference value
+            Comp Always  // Always pass stencil test
+            Pass Replace  // Replace stencil buffer value with reference value
         }
 
-        // Standard pass
         Pass
         {
             HLSLPROGRAM
@@ -29,34 +33,25 @@ Shader "Unlit/StencilShader"
             struct Attributes
             {
                 float4 positionOS : POSITION;  // Object space position
-                float2 uv : TEXCOORD0;         // UV coordinates for texture sampling
             };
 
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;  // Clip-space position
-                float2 uv : TEXCOORD0;             // UV coordinates passed to fragment shader
             };
 
-            // Texture sampler
-            TEXTURE2D(_MainTex);
-            SAMPLER(sampler_MainTex);
-
-            // Vertex shader
+            // Vertex shader: simple pass-through
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);  // Transform position to clip space
-                OUT.uv = IN.uv;  // Pass UV coordinates
+                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
                 return OUT;
             }
 
-            // Fragment shader
+            // Fragment shader: return black (but ColorMask 0 prevents it from being rendered)
             half4 frag(Varyings IN) : SV_Target
             {
-                // Sample texture using UV coordinates
-                half4 texColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv);
-                return texColor;  // Output the texture color
+                return half4(0, 0, 0, 1);  // Black color (will not be visible due to ColorMask 0)
             }
 
             ENDHLSL
